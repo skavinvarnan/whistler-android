@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "688276025502",
+    "firebase_url": "https://whistler-cricket.firebaseio.com",
+    "project_id": "whistler-cricket",
+    "storage_bucket": "whistler-cricket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688276025502:android:c19d1eae03a2ba19",
+        "android_client_info": {
+          "package_name": "com.vap.whistler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688276025502-19pjp0t79eklfpl04pb8vnccaci4nb6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACwNsMQvAZp_ZQaJmoKNkU1L_8n-2eI_c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

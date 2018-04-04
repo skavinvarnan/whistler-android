@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsActivity">
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Logout"
+        android:background="#f54d4d"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/terms"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="#1c82f1"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="16dp"
+        android:textAllCaps="false"
+        android:layout_marginStart="16dp"
+        android:text="Terms of Service"
+        app:layout_constraintBottom_toTopOf="@+id/logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/privacy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:textAllCaps="false"
+        android:background="#1c82f1"
+        android:layout_marginStart="16dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:text="Privacy Policy"
+        app:layout_constraintBottom_toTopOf="@+id/terms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/faq"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="#1c82f1"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="16dp"
+        android:textAllCaps="false"
+        android:text="Frequently asked questions"
+        app:layout_constraintBottom_toTopOf="@+id/privacy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/rules"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="16dp"
+        android:text="Rules"
+        android:textAllCaps="false"
+        android:background="#4bb750"
+        app:layout_constraintBottom_toTopOf="@+id/faq"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="10sp"
+        android:gravity="center"
+        android:layout_marginStart="8dp"
+        android:text="Icon made by Freepik from www.flaticon.com"
+        app:layout_constraintBottom_toTopOf="@+id/rules"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>
