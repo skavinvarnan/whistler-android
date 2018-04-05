@@ -151,7 +151,7 @@ class LoginActivity : BaseActivity() {
                             thereAreNoMatchesHappeningCurrently()
                         }
                     } else {
-                        signInError()
+                        thereAreNoMatchesHappeningCurrently()
                     }
                 }
     }

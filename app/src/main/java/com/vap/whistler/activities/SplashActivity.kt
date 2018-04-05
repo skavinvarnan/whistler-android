@@ -10,16 +10,15 @@ import com.vap.whistler.R
 import com.vap.whistler.model.GenericResponse
 import com.vap.whistler.model.HappeningMatches
 import com.vap.whistler.model.ScheduleItem
-import com.vap.whistler.utils.Utils
-import com.vap.whistler.utils.WhistlerConstants
-import com.vap.whistler.utils.WhistlerFirebase
-import com.vap.whistler.utils.WhistlerSharedPreference
+import com.vap.whistler.utils.*
+
 
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        JavaUtils.trustEveryone()
         loadLandingOrSignIn()
     }
 
