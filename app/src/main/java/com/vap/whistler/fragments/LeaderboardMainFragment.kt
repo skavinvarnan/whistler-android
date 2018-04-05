@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 
 import com.vap.whistler.R
 import com.vap.whistler.model.LeaderBoardItem
@@ -28,6 +30,7 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: LeaderboardAdapter
+    private lateinit var adView: AdView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -35,9 +38,16 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
+        adView = view.findViewById(R.id.adView)
+        loadAd()
         initFragmentActionBar()
         initView()
         return view
+    }
+
+    private fun loadAd() {
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     private fun initView() {

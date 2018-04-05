@@ -1,7 +1,9 @@
 package com.vap.whistler.fragments
 
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -13,12 +15,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.gson.Gson
 
 import com.vap.whistler.R
+import com.vap.whistler.activities.GroupInfoActivity
+import com.vap.whistler.activities.NewJoinGroupActivity
 import com.vap.whistler.model.MyGroupItem
 import com.vap.whistler.model.MyGroupsResponse
 import com.vap.whistler.utils.Utils
 import com.vap.whistler.utils.WhistlerConstants
+import kotlinx.android.synthetic.main.fragment_groups_main.*
 
 class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -28,6 +36,7 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: MyGroupsAdapter
+    private lateinit var adView: AdView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -35,13 +44,20 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
+        adView = view.findViewById(R.id.adView)
+        loadAd()
         initFragmentActionBar()
         initView()
         return view
     }
 
+    private fun loadAd() {
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+    }
+
     private fun initView() {
-        recyclerAdapter = MyGroupsAdapter(ArrayList())
+        recyclerAdapter = MyGroupsAdapter(ArrayList(), this)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -70,6 +86,9 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             val (response, _) = result
             if (response != null && response.error == null) {
                 recyclerAdapter.items = response.groups!!
+                if (response.groups.isEmpty()) {
+                    Snackbar.make(main_layout, "You are not part of any Group. \nClick the + icon to add a new group", Snackbar.LENGTH_LONG).show()
+                }
             } else {
                 //error
             }
@@ -87,12 +106,13 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun initFragmentActionBar() {
         customActionBarTitle.text = "Groups"
         customActionBarImageTwo.visibility = View.INVISIBLE
+        customActionBarImageOne.setImageResource(R.drawable.add)
         customActionBarImageOne.setOnClickListener { imageOneClicked() }
         customActionBarImageTwo.setOnClickListener { imageTwoClicked() }
     }
 
     private fun imageOneClicked() {
-
+        context!!.startActivity(Intent(context, NewJoinGroupActivity::class.java))
     }
 
     private fun imageTwoClicked() {
@@ -101,9 +121,15 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onResume() {
         super.onResume()
+        loadRecyclerViewData()
     }
 
-    class MyGroupsAdapter(var items: List<MyGroupItem>) : RecyclerView.Adapter<MyGroupsAdapter.ViewHolder>() {
+    fun selectedItem(groupItem: MyGroupItem) {
+        context!!.startActivity(Intent(context, GroupInfoActivity::class.java)
+                .putExtra(WhistlerConstants.Intent.GROUP_ITEM, Gson().toJson(groupItem)))
+    }
+
+    class MyGroupsAdapter(var items: List<MyGroupItem>, val context: GroupsMainFragment) : RecyclerView.Adapter<MyGroupsAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var name: TextView = view.findViewById<View>(R.id.name) as TextView
@@ -126,6 +152,9 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             holder.name.text = items[position].name
             holder.members.text = "${items[position].members.size} Members"
             holder.icon.setImageResource(getImageForEmoji(items[position].icon))
+            holder.itemView.setOnClickListener {
+                context.selectedItem(items[position])
+            }
         }
 
         private fun getImageForEmoji(team: String): Int {

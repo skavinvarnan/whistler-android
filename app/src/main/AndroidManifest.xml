@@ -20,7 +20,22 @@
         </activity>
         <activity android:name=".activities.LiveActivity" />
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.SettingsActivity"
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.PredictionPopupActivity"
+            android:theme="@style/NoTitleDialog" />
+        <activity
+            android:name=".activities.NewJoinGroupActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.GroupInfoActivity"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.UserPredictionReportActivity"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.UserMatchsReportActivity"
             android:theme="@style/AppTheme"/>
     </application>
 

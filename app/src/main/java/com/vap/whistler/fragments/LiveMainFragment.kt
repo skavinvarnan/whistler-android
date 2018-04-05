@@ -1,6 +1,7 @@
 package com.vap.whistler.fragments
 
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -26,8 +27,17 @@ import com.vap.whistler.utils.WhistlerFirebase
 import kotlinx.android.synthetic.main.fragment_live_main.*
 import java.util.*
 import kotlin.concurrent.timerTask
-import android.widget.LinearLayout
-
+import android.graphics.drawable.GradientDrawable
+import android.support.v7.app.AlertDialog
+import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.vap.whistler.MainApplication
+import com.vap.whistler.activities.LiveActivity
+import com.vap.whistler.activities.PredictionPopupActivity
+import kotlinx.android.synthetic.main.activity_user_prediction_report.*
+import kotlin.collections.ArrayList
 
 
 class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -39,6 +49,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: PredictionAdapter
+    private lateinit var adView: AdView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,13 +57,20 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
+        adView = view.findViewById(R.id.adView)
+//        loadAd()
         initFragmentActionBar()
         initView()
         return view
     }
 
+    private fun loadAd() {
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+    }
+
     private fun initView() {
-        recyclerAdapter = PredictionAdapter(ArrayList())
+        recyclerAdapter = PredictionAdapter(ArrayList(), null, context!!)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -66,9 +84,9 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 android.R.color.holo_blue_dark)
         swipeRefreshLayout.post({
             swipeRefreshLayout.isRefreshing = true
-            loadRecyclerViewData()
+            loadRecyclerViewData(true)
         })
-        loadRecyclerViewData()
+        loadRecyclerViewData(true)
 
         val params = recyclerView.layoutParams as ViewGroup.LayoutParams
         val paramsParent = swipeRefreshLayout.layoutParams as ViewGroup.LayoutParams
@@ -77,17 +95,18 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        loadRecyclerViewData()
+        loadRecyclerViewData(true)
     }
 
-    private fun loadRecyclerViewData() {
+    private fun loadRecyclerViewData(showRefreshIcon: Boolean) {
         if (WhistlerFirebase.isUserLoggedIn()) {
-            swipeRefreshLayout.isRefreshing = true
+            swipeRefreshLayout.isRefreshing = showRefreshIcon
             Fuel.get(WhistlerConstants.Server.BASE_URL + "/prediction/my_prediction_table/${Utils.Match.getCurrentMatch().key}")
                     .header(Utils.Fuel.autoHeader()).responseObject(PredictPointsResponse.Deserializer()) { _, _, result ->
                         val (response, _) = result
                         if (response != null && response.error == null) {
                             recyclerAdapter.items = response.predictPointsTableData!!
+                            recyclerAdapter.teamBatting = response.teamBatting
                         } else {
                             //error
                         }
@@ -109,7 +128,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             if(activity != null) {
                 activity!!.runOnUiThread {
                     getScoreCardFromServer()
-                    loadRecyclerViewData()
+                    loadRecyclerViewData(false)
                 }
             }
         }, 0, 5000)
@@ -121,9 +140,15 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun incrementTimerUpdatedLabel() {
         updatedHowManySecondsAgo += 1
-        if (activity != null) {
+        if (activity != null && updatedAt != null) {
             try {
-                activity!!.runOnUiThread { updatedAt.text = "Updated $updatedHowManySecondsAgo seconds ago" }
+                activity!!.runOnUiThread {
+                    try {
+                        updatedAt.text = "Updated $updatedHowManySecondsAgo seconds ago"
+                    } catch (err: Exception) {
+
+                    }
+                }
             } catch (err: Exception) {
 
             }
@@ -159,7 +184,37 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun imageTwoClicked() {
+        switchMatch()
+    }
 
+    private fun switchMatch() {
+        if (Utils.Match.getHappeningMatches().size > 1) {
+            val alert = AlertDialog.Builder(context!!)
+            alert.setMessage("Want to see this match?")
+            alert.setTitle(getOtherMatchName())
+            alert.setPositiveButton("Yes") { _, _ ->
+                if (Utils.Match.getCurrentMatch().key == Utils.Match.getHappeningMatches()[0].key) {
+                    Utils.Match.updateCurrentMatch(Utils.Match.getHappeningMatches()[1])
+                } else {
+                    Utils.Match.updateCurrentMatch(Utils.Match.getHappeningMatches()[0])
+                }
+                recyclerAdapter.items = ArrayList()
+                recyclerAdapter.notifyDataSetChanged()
+                getScoreCardFromServer()
+                loadRecyclerViewData(true)
+
+            }
+            alert.setNegativeButton("No") { _, _ -> }
+            alert.show()
+        }
+    }
+
+    private fun getOtherMatchName(): String {
+        return if (Utils.Match.getCurrentMatch().key == Utils.Match.getHappeningMatches()[0].key) {
+            Utils.Match.getHappeningMatches()[1].short_name
+        } else {
+            Utils.Match.getHappeningMatches()[0].short_name
+        }
     }
 
     private fun getScoreCardFromServer() {
@@ -190,6 +245,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun updateScoreBoard(scoreBoard: ScoreBoard) {
+        if (updatedAt == null) return
         updatedHowManySecondsAgo = 0
         if (scoreBoard.showUpdated) {
             updatedAt.visibility = View.VISIBLE
@@ -208,6 +264,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         rrrLabel.text = scoreBoard.rrrLabel
         rrrData.text = scoreBoard.rrrData
         currentStatus.text = scoreBoard.matchInfo
+        currentStatus.isSelected = true
         batsmanOneName.text = scoreBoard.batsmanNameOne
         batsmanOneRun.text = scoreBoard.batsmanRunsOne
         batsmanOneBalls.text = scoreBoard.batsmanBallsOne
@@ -231,7 +288,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     }
 
-    class PredictionAdapter(var items: List<PredictPointsItemArr>) : RecyclerView.Adapter<PredictionAdapter.ViewHolder>() {
+    class PredictionAdapter(var items: List<PredictPointsItemArr>, var teamBatting: String?, var context: Context) : RecyclerView.Adapter<PredictionAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var overs: TextView = view.findViewById<View>(R.id.overs) as TextView
@@ -254,22 +311,27 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.overs.text = items[position].over.label
+            val density = MainApplication.getGlobalContext().resources.displayMetrics.density
             if (items[position].over.whiteText) {
                 holder.overs.setTextColor(Color.WHITE)
-                holder.overs.setBackgroundColor(Color.parseColor(items[position].over.colorHex))
+                val shape2 = GradientDrawable()
+                shape2.shape = GradientDrawable.RECTANGLE
+                shape2.cornerRadii = floatArrayOf(16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density)
+                shape2.setColor(Color.parseColor(items[position].over.colorHex))
+                holder.overs.background = shape2
             } else {
                 holder.overs.setTextColor(Color.BLACK)
                 holder.overs.setBackgroundColor(Color.TRANSPARENT)
             }
 
-//            holder.overs.setBackgroundResource(R.drawable.label_corner)
-//            var g: GradientDrawable = holder.overs.getBackground()
-//            g.setColor(Color.parseColor(items[position].over.colorHex))
-
             holder.runs.text = items[position].runs.label
             if (items[position].runs.whiteText) {
                 holder.runs.setTextColor(Color.WHITE)
-                holder.runs.setBackgroundColor(Color.parseColor(items[position].runs.colorHex))
+                val shape3 = GradientDrawable()
+                shape3.shape = GradientDrawable.RECTANGLE
+                shape3.cornerRadii = floatArrayOf(16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density)
+                shape3.setColor(Color.parseColor(items[position].runs.colorHex))
+                holder.runs.background = shape3
             } else {
                 holder.runs.setTextColor(Color.BLACK)
                 holder.runs.setBackgroundColor(Color.TRANSPARENT)
@@ -279,7 +341,11 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             holder.prediction.text = items[position].predicted.label
             if (items[position].predicted.whiteText) {
                 holder.prediction.setTextColor(Color.WHITE)
-                holder.prediction.setBackgroundColor(Color.parseColor(items[position].predicted.colorHex))
+                val shape = GradientDrawable()
+                shape.shape = GradientDrawable.RECTANGLE
+                shape.cornerRadii = floatArrayOf(16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density)
+                shape.setColor(Color.parseColor(items[position].predicted.colorHex))
+                holder.prediction.background = shape
             } else {
                 holder.prediction.setTextColor(Color.BLACK)
                 holder.prediction.setBackgroundColor(Color.TRANSPARENT)
@@ -289,19 +355,42 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             holder.points.text = items[position].points.label
             if (items[position].points.whiteText) {
                 holder.points.setTextColor(Color.WHITE)
-                holder.points.setBackgroundColor(Color.parseColor(items[position].points.colorHex))
+                val shape1 = GradientDrawable()
+                shape1.shape = GradientDrawable.RECTANGLE
+                shape1.cornerRadii = floatArrayOf(16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density, 16 * density)
+                shape1.setColor(Color.parseColor(items[position].points.colorHex))
+                holder.points.background = shape1
             } else {
                 holder.points.setTextColor(Color.BLACK)
                 holder.points.setBackgroundColor(Color.TRANSPARENT)
             }
 
 
-            if(!items[position].predictButton.clickable) {
+            if(items[position].predictButton.clickable) {
                 holder.predictButton.isEnabled = true
-                holder.predictButton.setBackgroundColor(Color.GREEN)
+                val shape1 = GradientDrawable()
+                shape1.shape = GradientDrawable.RECTANGLE
+                shape1.cornerRadii = floatArrayOf(10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density)
+                shape1.setColor(Color.parseColor("#007BFA"))
+                holder.predictButton.background = shape1
+                Utils.Others.buttonEffect(holder.predictButton, "#175ed1")
+                holder.predictButton.setTextColor(Color.WHITE)
+                holder.predictButton.setOnClickListener {
+                    if (teamBatting != null) {
+                        val over: Int = position + 1
+                        context.startActivity(Intent(context, PredictionPopupActivity::class.java)
+                                .putExtra(WhistlerConstants.Intent.OVER, over)
+                                .putExtra(WhistlerConstants.Intent.TEAM_BATTING, teamBatting!!));
+                    }
+                }
             } else {
                 holder.predictButton.isEnabled = false
-                holder.predictButton.setBackgroundColor(Color.GRAY)
+                val shape1 = GradientDrawable()
+                shape1.shape = GradientDrawable.RECTANGLE
+                shape1.cornerRadii = floatArrayOf(10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density, 10 * density)
+                shape1.setColor(Color.TRANSPARENT)
+                holder.predictButton.setTextColor(Color.parseColor("#c4c4c4"))
+                holder.predictButton.background = shape1
             }
 
         }

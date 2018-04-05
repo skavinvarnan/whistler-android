@@ -6,10 +6,8 @@ import android.os.Bundle
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.vap.whistler.R
-import com.vap.whistler.model.GenericResponse
 import com.vap.whistler.model.HappeningMatches
 import com.vap.whistler.model.ScheduleItem
-import com.vap.whistler.model.ScheduleResponse
 import com.vap.whistler.utils.Utils
 import com.vap.whistler.utils.WhistlerConstants
 import com.vap.whistler.utils.WhistlerFirebase
@@ -51,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun getHappeningMatch() {
         Fuel.get(WhistlerConstants.Server.BASE_URL + "/match/happening_schedule")
-                .header(Utils.Fuel.autoHeader()).responseString() { _, _, result ->
+                .header(Utils.Fuel.autoHeader()).responseString { _, _, result ->
                     val (response, err) = result
                     if (err == null) {
                         val obj: HappeningMatches = Gson().fromJson(response, HappeningMatches::class.java)
@@ -72,7 +70,25 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun thereAreNoMatchesHappeningCurrently() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Fuel.get(WhistlerConstants.Server.BASE_URL + "/match/get_some_match_to_display")
+                .header(Utils.Fuel.autoHeader()).responseString { _, _, result ->
+                    val (response, err) = result
+                    if (err == null) {
+                        val obj: HappeningMatches = Gson().fromJson(response, HappeningMatches::class.java)
+                        if (obj.schedule.isNotEmpty()) {
+                            WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.HAPPENING_MATCH, response!!)
+                            val currentMatch: ScheduleItem = obj.schedule[0]
+                            val curMatchStr = Gson().toJson(currentMatch)
+                            WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.CURRENT_MATCH, curMatchStr)
+                            startActivity(Intent(this@SplashActivity, LiveActivity::class.java))
+                            finish()
+                        } else {
+                            showError()
+                        }
+                    } else {
+                        showError()
+                    }
+                }
     }
 
     private fun showError() {

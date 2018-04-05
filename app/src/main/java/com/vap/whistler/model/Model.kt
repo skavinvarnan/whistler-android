@@ -37,6 +37,7 @@ data class ScheduleItem (val related_name: String,
                          val displayDate: String,
                          val displayTime: String,
                          val venue: String,
+                         val short_name: String,
                          val team_a_name: String,
                          val team_b_name: String,
                          val key: String,
@@ -129,5 +130,44 @@ data class MyGroupItem (val groupId: String,
                         val admin: String,
                         val members: List<String>,
                         val _id: String)
+
+data class GroupInfoResponse(val groupMembers: List<GroupInfoItem>?, val error: ErrorModel?) {
+
+    class Deserializer : ResponseDeserializable<GroupInfoResponse> {
+        override fun deserialize(content: String) = Gson().fromJson(content, GroupInfoResponse::class.java)!!
+    }
+
+}
+
+data class GroupInfoItem (val name: String,
+                        val uid: String,
+                        val over_all_points: Int,
+                        val total_for_match: Int)
+
+
+data class UserPredictionResponse(val userPrediction: List<UserPredictionItem>?, val error: ErrorModel?) {
+
+    class Deserializer : ResponseDeserializable<UserPredictionResponse> {
+        override fun deserialize(content: String) = Gson().fromJson(content, UserPredictionResponse::class.java)!!
+    }
+
+}
+
+data class UserPredictionItem (val over: String,
+                          val runs: String,
+                          val predicted: String,
+                          val points: String)
+
+data class MatchReportResponse(val allMatches: List<MatchReportItem>?, val error: ErrorModel?) {
+
+    class Deserializer : ResponseDeserializable<MatchReportResponse> {
+        override fun deserialize(content: String) = Gson().fromJson(content, MatchReportResponse::class.java)!!
+    }
+
+}
+
+data class MatchReportItem (val match: String,
+                               val key: String,
+                               val points: String)
 
 

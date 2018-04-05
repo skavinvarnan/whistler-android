@@ -22,8 +22,8 @@ import com.vap.whistler.fragments.ScheduleMainFragment
 import android.support.v4.view.ViewPager.OnPageChangeListener
 import com.vap.whistler.utils.WhistlerFirebase
 import android.widget.Toast
-
-
+import com.vap.whistler.utils.WhistlerConstants
+import com.vap.whistler.utils.WhistlerSharedPreference
 
 
 class LiveActivity : AppCompatActivity() {
@@ -142,6 +142,12 @@ class LiveActivity : AppCompatActivity() {
         if (!WhistlerFirebase.isUserLoggedIn()) {
             startActivity(Intent(this@LiveActivity, LoginActivity::class.java))
             finish()
+        } else {
+            WhistlerFirebase.getFirebaseCurrentUser().getIdToken(true).addOnCompleteListener({
+                if (it.result.token != null) {
+                    WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
+                }
+            })
         }
     }
 

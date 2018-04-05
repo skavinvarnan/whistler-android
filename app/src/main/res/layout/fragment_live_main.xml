@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.LiveMainFragment">
 
     <include
         android:id="@+id/custom_action_bar"
         layout="@layout/custom_action_bar"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="?android:attr/actionBarSize" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/custom_action_bar">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="3"
-                        android:text="RCB"
+                        android:text="--"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
@@ -58,7 +53,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="6.5"
                         android:fontFamily="sans-serif-medium"
-                        android:text="223-2"
                         android:textColor="@android:color/black"
                         android:textSize="24sp" />
                 </LinearLayout>
@@ -87,7 +81,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="6.5"
                         android:fontFamily="sans-serif-medium"
-                        android:text="24.8 Ov"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -110,7 +103,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
-                        android:text="P'SHIP:"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
@@ -121,7 +113,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-medium"
-                        android:text="290"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
 
@@ -138,7 +129,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
-                        android:text="P'SHIP:"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
@@ -149,7 +139,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-medium"
-                        android:text="290"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
 
@@ -166,7 +155,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
-                        android:text="P'SHIP:"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
@@ -177,7 +165,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-medium"
-                        android:text="290"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
             </RelativeLayout>
@@ -193,7 +180,12 @@
             android:id="@+id/currentStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tesing"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:text="Loading"
             android:textColor="@android:color/black" />
 
         <View
@@ -518,22 +510,19 @@
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/ad_live"
         android:id="@+id/adView"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        android:layout_height="wrap_content" />
 
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adView">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp">
 
         <include
             android:id="@+id/include"
@@ -560,4 +549,4 @@
 
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
