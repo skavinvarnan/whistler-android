@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
 import com.google.android.gms.ads.AdRequest
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.vap.whistler.R
 import com.vap.whistler.model.MatchReportItem
 import com.vap.whistler.model.MatchReportResponse
@@ -26,10 +27,13 @@ class UserMatchsReportActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefre
 
     private lateinit var recyclerAdapter: UserMatchReportAdapter
     private lateinit var uid: String
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_matchs_report)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        firebaseAnalytics.logEvent("check_all_match_points", null)
         if(intent.getStringExtra(WhistlerConstants.Intent.UID) == null) {
             finish()
             return

@@ -29,14 +29,11 @@ import java.util.*
 import kotlin.concurrent.timerTask
 import android.graphics.drawable.GradientDrawable
 import android.support.v7.app.AlertDialog
-import android.widget.Toast
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.vap.whistler.MainApplication
-import com.vap.whistler.activities.LiveActivity
 import com.vap.whistler.activities.PredictionPopupActivity
-import kotlinx.android.synthetic.main.activity_user_prediction_report.*
 import kotlin.collections.ArrayList
 
 
@@ -50,15 +47,17 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: PredictionAdapter
     private lateinit var adView: AdView
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_live_main, container, false)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
         adView = view.findViewById(R.id.adView)
-//        loadAd()
+        loadAd()
         initFragmentActionBar()
         initView()
         return view
@@ -107,8 +106,9 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         if (response != null && response.error == null) {
                             recyclerAdapter.items = response.predictPointsTableData!!
                             recyclerAdapter.teamBatting = response.teamBatting
+                            firebaseAnalytics.logEvent("fetch_prediction_table", null)
                         } else {
-                            //error
+                            firebaseAnalytics.logEvent("fetch_prediction_table_error", null)
                         }
                         swipeRefreshLayout.isRefreshing = false
                         recyclerAdapter.notifyDataSetChanged()
@@ -146,11 +146,11 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     try {
                         updatedAt.text = "Updated $updatedHowManySecondsAgo seconds ago"
                     } catch (err: Exception) {
-
+                        firebaseAnalytics.logEvent("caught_crash_123", null)
                     }
                 }
             } catch (err: Exception) {
-
+                firebaseAnalytics.logEvent("caught_crash_243", null)
             }
         }
     }
@@ -223,8 +223,9 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 val (response, _) = result
                 if (response != null && response.error == null) {
                     updateScoreBoard(response.scoreBoard!!)
+                    firebaseAnalytics.logEvent("fetch_scorecard", null)
                 } else {
-                    //TODO google analytics. error fetching scorecard
+                    firebaseAnalytics.logEvent("fetch_scorecard_error", null)
                 }
             }
         } else {
@@ -380,7 +381,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         val over: Int = position + 1
                         context.startActivity(Intent(context, PredictionPopupActivity::class.java)
                                 .putExtra(WhistlerConstants.Intent.OVER, over)
-                                .putExtra(WhistlerConstants.Intent.TEAM_BATTING, teamBatting!!));
+                                .putExtra(WhistlerConstants.Intent.TEAM_BATTING, teamBatting!!))
                     }
                 }
             } else {

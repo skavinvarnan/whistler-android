@@ -3,9 +3,11 @@ package com.vap.whistler.activities
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.vap.whistler.R
+import com.vap.whistler.model.GenericResponse
 import com.vap.whistler.model.HappeningMatches
 import com.vap.whistler.model.ScheduleItem
 import com.vap.whistler.utils.Utils
@@ -80,8 +82,7 @@ class SplashActivity : AppCompatActivity() {
                             val currentMatch: ScheduleItem = obj.schedule[0]
                             val curMatchStr = Gson().toJson(currentMatch)
                             WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.CURRENT_MATCH, curMatchStr)
-                            startActivity(Intent(this@SplashActivity, LiveActivity::class.java))
-                            finish()
+                            updateCurrentUserAndProceed()
                         } else {
                             showError()
                         }
@@ -91,7 +92,29 @@ class SplashActivity : AppCompatActivity() {
                 }
     }
 
+    private fun updateCurrentUserAndProceed() {
+        Fuel.get(WhistlerConstants.Server.BASE_URL + "/user/init/${WhistlerFirebase.getFirebaseCurrentUser().displayName}/${WhistlerFirebase.getFirebaseCurrentUser().email}")
+            .header(Utils.Fuel.autoHeader()).responseObject(GenericResponse.Deserializer()) { _, _, result ->
+                val (response, _) = result
+                if (response != null && response.error == null) {
+                    startActivity(Intent(this@SplashActivity, LiveActivity::class.java))
+                    finish()
+                } else {
+                    showError()
+                }
+            }
+    }
+
     private fun showError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val alert = AlertDialog.Builder(this)
+        alert.setMessage("Unable to connect with to the internet. Please check your network settings")
+        alert.setTitle("No connection")
+        alert.setPositiveButton("Try Again") { _, _ ->
+            loadLandingOrSignIn()
+        }
+        alert.setNegativeButton("Close App") { _, _ ->
+            finish()
+        }
+        alert.show()
     }
 }

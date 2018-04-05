@@ -22,11 +22,14 @@ import com.vap.whistler.fragments.ScheduleMainFragment
 import android.support.v4.view.ViewPager.OnPageChangeListener
 import com.vap.whistler.utils.WhistlerFirebase
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.vap.whistler.utils.WhistlerConstants
 import com.vap.whistler.utils.WhistlerSharedPreference
 
 
 class LiveActivity : AppCompatActivity() {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     val scheduleFragment: Fragment = ScheduleMainFragment()
     val liveFragment: Fragment = LiveMainFragment()
@@ -58,6 +61,7 @@ class LiveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         viewPager.adapter = MyPageAdapter(supportFragmentManager)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         disableShiftMode(navigation)
@@ -74,15 +78,19 @@ class LiveActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 when(position) {
                     0 -> {
+                        firebaseAnalytics.logEvent("schedule", null)
                         navigation.selectedItemId = R.id.navigation_schedule
                     }
                     1 -> {
+                        firebaseAnalytics.logEvent("live", null)
                         navigation.selectedItemId = R.id.navigation_live
                     }
                     2 -> {
+                        firebaseAnalytics.logEvent("leaderboard", null)
                         navigation.selectedItemId = R.id.navigation_leaderboard
                     }
                     3 -> {
+                        firebaseAnalytics.logEvent("groups", null)
                         navigation.selectedItemId = R.id.navigation_groups
                     }
                 }

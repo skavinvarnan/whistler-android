@@ -87,7 +87,7 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             if (response != null && response.error == null) {
                 recyclerAdapter.items = response.groups!!
                 if (response.groups.isEmpty()) {
-                    Snackbar.make(main_layout, "You are not part of any Group. \nClick the + icon to add a new group", Snackbar.LENGTH_LONG).show()
+//                    Snackbar.make(main_layout, "You are not part of any Group. \nClick the + icon to add a new group", Snackbar.LENGTH_LONG).show()
                 }
             } else {
                 //error

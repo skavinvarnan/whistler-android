@@ -15,6 +15,7 @@ import com.vap.whistler.R
 import android.support.v7.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_new_join_group.*
 import com.github.kittinunf.fuel.Fuel
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.vap.whistler.model.GenericResponse
 import com.vap.whistler.utils.Utils
 import com.vap.whistler.utils.WhistlerConstants
@@ -23,6 +24,7 @@ import com.vap.whistler.utils.WhistlerConstants
 class NewJoinGroupActivity : AppCompatActivity() {
 
     private lateinit var recyclerAdapter: NewJoinAdapter
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private var imageArray: IntArray = intArrayOf(R.drawable.batman, R.drawable.cat, R.drawable.clown, R.drawable.cool,
         R.drawable.crazy, R.drawable.devil, R.drawable.hypnotized, R.drawable.minion,
@@ -35,6 +37,7 @@ class NewJoinGroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_join_group)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         supportActionBar!!.title = "Add / Join Group"
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -56,12 +59,15 @@ class NewJoinGroupActivity : AppCompatActivity() {
                             val (response, _) = result
                             if (response != null && response.error == null) {
                                 finish()
+                                firebaseAnalytics.logEvent("create_group", null)
                             } else {
+                                firebaseAnalytics.logEvent("create_group_error", null)
                                 Snackbar.make(findViewById(R.id.main_layout), "Unable to create group. Please try again", Snackbar.LENGTH_SHORT).show()
                             }
                         }
 
             } else {
+                firebaseAnalytics.logEvent("group_name_empty", null)
                 Snackbar.make(findViewById(R.id.main_layout), "Please enter the group name and click on create group button", Snackbar.LENGTH_SHORT).show()
             }
         }
@@ -73,11 +79,14 @@ class NewJoinGroupActivity : AppCompatActivity() {
                             val (response, _) = result
                             if (response != null && response.error == null) {
                                 finish()
+                                firebaseAnalytics.logEvent("join_group", null)
                             } else if (response != null && response.error!!.code == 404) {
+                                firebaseAnalytics.logEvent("join_group_empty", null)
                                 Snackbar.make(findViewById(R.id.main_layout), "Group not found. Check if you have entered proper Group ID and Joincode", Snackbar.LENGTH_SHORT).show()
                             }
                         }
             } else {
+                firebaseAnalytics.logEvent("join_group_error", null)
                 Snackbar.make(findViewById(R.id.main_layout), "Please enter the group ID and join code. You can get this from group admin", Snackbar.LENGTH_SHORT).show()
             }
         }

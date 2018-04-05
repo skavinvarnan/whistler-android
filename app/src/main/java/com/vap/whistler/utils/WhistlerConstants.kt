@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseUser
 class WhistlerConstants {
     class Server {
         companion object {
-            const val BASE_URL: String  = "http://192.168.1.139:7325/api"
+            const val BASE_URL: String  = "https://api.guessbuzz.in:7325/api"
         }
     }
 

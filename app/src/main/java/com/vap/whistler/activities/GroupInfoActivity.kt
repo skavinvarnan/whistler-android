@@ -19,20 +19,20 @@ import com.vap.whistler.utils.WhistlerFirebase
 import kotlinx.android.synthetic.main.activity_group_info.*
 import android.widget.EditText
 import android.widget.Toast
-import android.content.Intent.ACTION_SEND
-import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
-
-
+import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var groupItem: MyGroupItem
     private lateinit var recyclerAdapter: GroupInfoAdapter
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_info)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        firebaseAnalytics.logEvent("check_group_info", null)
         val str = intent.getStringExtra(WhistlerConstants.Intent.GROUP_ITEM)
         if (str != null) {
            groupItem = Gson().fromJson(str, MyGroupItem::class.java)
@@ -127,12 +127,15 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                             val (response, _) = result
                             if (response != null && response.error == null) {
                                 finish()
+                                firebaseAnalytics.logEvent("edit_group", null)
                             } else {
+                                firebaseAnalytics.logEvent("edit_group_error", null)
                                 Toast.makeText(this@GroupInfoActivity, "Unable to edit group. Please try again", Toast.LENGTH_SHORT).show()
                             }
                             hideBaseProgressBar()
                         }
             } else {
+                firebaseAnalytics.logEvent("edit_group_empty", null)
                 Toast.makeText(this@GroupInfoActivity, "Please enter a group name", Toast.LENGTH_SHORT).show()
             }
         }
@@ -148,12 +151,15 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         alert.setTitle("Leave group")
 
         alert.setPositiveButton("Yes") { _, _ ->
+
             Fuel.get(WhistlerConstants.Server.BASE_URL + "/group/leave_group/${groupItem._id}")
                     .header(Utils.Fuel.autoHeader()).responseObject(GenericResponse.Deserializer()) { _, _, result ->
                         val (response, _) = result
                         if (response != null && response.error == null) {
                             finish()
+                            firebaseAnalytics.logEvent("leave_group", null)
                         } else {
+                            firebaseAnalytics.logEvent("leave_group_error", null)
                             Toast.makeText(this@GroupInfoActivity, "Unable to leave group. Please try again", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -184,6 +190,7 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         loadRecyclerViewData()
         Utils.Others.buttonEffect(inviteFriendsButton, "#157201")
         inviteFriendsButton.setOnClickListener {
+            firebaseAnalytics.logEvent("invite_friends", null)
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, "Because Guessing Is Fun! Join ${WhistlerFirebase.getFirebaseCurrentUser().displayName}'s group @GUESSBUZZ and Predict Scores for T20 Cricket Matches this SUMMER. Win Exciting Prizes. " +
@@ -219,6 +226,47 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     }
 
+    fun itemLongClicked(position: Int): Boolean {
+        val g: GroupInfoItem = recyclerAdapter.items[position]
+        if (g.uid == WhistlerFirebase.getFirebaseCurrentUser().uid) {
+            val alert = AlertDialog.Builder(this)
+            alert.setMessage("You are the admin, you cant leave the group")
+            alert.setTitle("Oops!")
+
+            alert.setPositiveButton("Yes") { _, _ ->
+
+            }
+
+            alert.setNegativeButton("No") { _, _ -> }
+
+            alert.show()
+            return true
+        } else {
+            val alert = AlertDialog.Builder(this)
+            alert.setMessage("Are you sure you want to remove ${g.name}?")
+            alert.setTitle("Remove member?")
+
+            alert.setPositiveButton("Yes") { _, _ ->
+
+                Fuel.get(WhistlerConstants.Server.BASE_URL + "/group/remove_member/${groupItem._id}/${g.uid}")
+                        .header(Utils.Fuel.autoHeader()).responseObject(GenericResponse.Deserializer()) { _, _, result ->
+                            val (response, _) = result
+                            if (response != null && response.error == null) {
+                                firebaseAnalytics.logEvent("remove_group_member", null)
+                            } else {
+                                firebaseAnalytics.logEvent("remove_group_member_error", null)
+                                Toast.makeText(this@GroupInfoActivity, "Unable to remove member from group. Please try again", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+            }
+
+            alert.setNegativeButton("No") { _, _ -> }
+
+            alert.show()
+            return true
+        }
+    }
+
     class GroupInfoAdapter(var items: List<GroupInfoItem>, val context: GroupInfoActivity) : RecyclerView.Adapter<GroupInfoAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -242,6 +290,9 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             holder.name.text = items[position].name
             holder.overall.text = items[position].over_all_points.toString()
             holder.current.text = items[position].total_for_match.toString()
+            holder.itemView.setOnLongClickListener({
+                context.itemLongClicked(position)
+            })
             holder.itemView.setOnClickListener {
                 context.itemClicked(position)
             }

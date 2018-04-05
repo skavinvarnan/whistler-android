@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
 import com.google.android.gms.ads.AdRequest
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.vap.whistler.R
 import com.vap.whistler.model.GroupInfoItem
@@ -30,20 +31,24 @@ class UserPredictionReportActivity : AppCompatActivity(), SwipeRefreshLayout.OnR
     private lateinit var uid: String
     private lateinit var title: String
     private var isLast: Boolean = false
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         setContentView(R.layout.activity_user_prediction_report)
         if (intent.getStringExtra(WhistlerConstants.Intent.GROUP_INFO_ITEM) == null) {
             predictionMatchKey = intent.getStringExtra(WhistlerConstants.Intent.MATCH_KEY)
             uid = intent.getStringExtra(WhistlerConstants.Intent.UID)
             title = intent.getStringExtra(WhistlerConstants.Intent.TITLE)
+            firebaseAnalytics.logEvent("check_match_report_last", null)
         } else {
             val str: String = intent.getStringExtra(WhistlerConstants.Intent.GROUP_INFO_ITEM)
             val groupInfoItem = Gson().fromJson(str, GroupInfoItem::class.java)
             predictionMatchKey = Utils.Match.getCurrentMatch().key
             uid = groupInfoItem.uid
             title = groupInfoItem.name
+            firebaseAnalytics.logEvent("check_match_report", null)
         }
 
         isLast = intent.getBooleanExtra(WhistlerConstants.Intent.IS_LAST, false)
