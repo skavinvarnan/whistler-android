@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_live_main.*
 import java.util.*
 import kotlin.concurrent.timerTask
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.support.v7.app.AlertDialog
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -42,6 +43,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var customActionBarTitle: TextView
     private lateinit var customActionBarImageOne: ImageView
     private lateinit var customActionBarImageTwo: ImageView
+    private lateinit var leftText: TextView
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -164,9 +166,12 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         customActionBarTitle = custom_action_bar!!.findViewById(R.id.title_text)
         customActionBarImageOne = custom_action_bar.findViewById(R.id.image_one)
         customActionBarImageTwo = custom_action_bar.findViewById(R.id.image_two)
+        leftText = custom_action_bar.findViewById(R.id.left_text)
     }
 
     private fun initFragmentActionBar() {
+        leftText.text = "RULES"
+        leftText.visibility = View.VISIBLE
         customActionBarTitle.text = "Live"
         if (Utils.Match.getHappeningMatches().size > 1) {
             customActionBarImageTwo.visibility = View.VISIBLE
@@ -175,6 +180,11 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
         customActionBarImageTwo.setOnClickListener { imageTwoClicked() }
         customActionBarImageOne.setOnClickListener { imageOneClicked() }
+        leftText.setOnClickListener {
+            firebaseAnalytics.logEvent("rules_action_bar", null)
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://guessbuzz.in/rules.html"))
+            startActivity(browserIntent)
+        }
     }
 
     private fun imageOneClicked() {

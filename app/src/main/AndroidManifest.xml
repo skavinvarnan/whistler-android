@@ -29,7 +29,6 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.PredictionPopupActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/NoTitleDialog" />
         <activity
             android:name=".activities.NewJoinGroupActivity"

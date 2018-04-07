@@ -1,6 +1,7 @@
 package com.vap.whistler.fragments
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -15,8 +16,12 @@ import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 
 import com.vap.whistler.R
+import com.vap.whistler.activities.UserPredictionReportActivity
+import com.vap.whistler.model.GroupInfoItem
 import com.vap.whistler.model.LeaderBoardItem
 import com.vap.whistler.model.LeaderBoardResponse
 import com.vap.whistler.utils.Utils
@@ -31,10 +36,12 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: LeaderboardAdapter
     private lateinit var adView: AdView
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_leaderboard_main, container, false)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
@@ -51,7 +58,7 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
     }
 
     private fun initView() {
-        recyclerAdapter = LeaderboardAdapter(ArrayList())
+        recyclerAdapter = LeaderboardAdapter(ArrayList(), this)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -96,7 +103,7 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
     }
 
     private fun initFragmentActionBar() {
-        customActionBarTitle.text = "Top 50 for ${Utils.Match.getCurrentMatch().related_name}"
+        customActionBarTitle.text = "Top 50 for ${Utils.Match.getCurrentMatch().short_name}"
         customActionBarImageOne.visibility = View.GONE
         customActionBarImageTwo.visibility = View.GONE
         customActionBarImageOne.setOnClickListener { imageOneClicked() }
@@ -115,7 +122,17 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         super.onResume()
     }
 
-    class LeaderboardAdapter(var items: List<LeaderBoardItem>) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
+    fun itemClicked(position: Int) {
+        if (context != null) {
+            firebaseAnalytics.logEvent("leader_board_user_details", null)
+            val g = GroupInfoItem(name = recyclerAdapter.items[position].name,
+                    uid = recyclerAdapter.items[position].uid, over_all_points = -1, total_for_match = -1)
+            context!!.startActivity(Intent(context, UserPredictionReportActivity::class.java)
+                    .putExtra(WhistlerConstants.Intent.GROUP_INFO_ITEM, Gson().toJson(g)))
+        }
+    }
+
+    class LeaderboardAdapter(var items: List<LeaderBoardItem>, val context: LeaderboardMainFragment) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var name: TextView = view.findViewById<View>(R.id.name) as TextView
@@ -134,6 +151,9 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.name.text = items[position].name
             holder.points.text = "${items[position].total_for_match}"
+            holder.itemView.setOnClickListener {
+                context.itemClicked(position)
+            }
         }
 
         override fun getItemCount() = items.size

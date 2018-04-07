@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 
 import com.vap.whistler.R
@@ -37,10 +38,13 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: MyGroupsAdapter
     private lateinit var adView: AdView
+    private lateinit var leftText: TextView
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_groups_main, container, false)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
         initCustomActionBar(view.findViewById(R.id.custom_action_bar))
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
@@ -101,17 +105,25 @@ class GroupsMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         customActionBarTitle = custom_action_bar!!.findViewById(R.id.title_text)
         customActionBarImageOne = custom_action_bar.findViewById(R.id.image_one)
         customActionBarImageTwo = custom_action_bar.findViewById(R.id.image_two)
+        leftText = custom_action_bar.findViewById(R.id.left_text)
     }
 
     private fun initFragmentActionBar() {
         customActionBarTitle.text = "Groups"
+        leftText.visibility = View.VISIBLE
+        leftText.text = "JOIN"
         customActionBarImageTwo.visibility = View.INVISIBLE
         customActionBarImageOne.setImageResource(R.drawable.add)
         customActionBarImageOne.setOnClickListener { imageOneClicked() }
         customActionBarImageTwo.setOnClickListener { imageTwoClicked() }
+        leftText.setOnClickListener {
+            firebaseAnalytics.logEvent("new_group_icon", null)
+            context!!.startActivity(Intent(context, NewJoinGroupActivity::class.java))
+        }
     }
 
     private fun imageOneClicked() {
+        firebaseAnalytics.logEvent("new_group_text", null)
         context!!.startActivity(Intent(context, NewJoinGroupActivity::class.java))
     }
 
