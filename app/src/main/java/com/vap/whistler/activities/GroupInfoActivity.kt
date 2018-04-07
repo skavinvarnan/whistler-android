@@ -27,6 +27,7 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var groupItem: MyGroupItem
     private lateinit var recyclerAdapter: GroupInfoAdapter
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private var transfer: TransferItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,13 +191,16 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         loadRecyclerViewData()
         Utils.Others.buttonEffect(inviteFriendsButton, "#157201")
         inviteFriendsButton.setOnClickListener {
-            firebaseAnalytics.logEvent("invite_friends", null)
-            val sendIntent = Intent()
-            sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Because Guessing Is Fun! Join ${WhistlerFirebase.getFirebaseCurrentUser().displayName}'s group @GUESSBUZZ and Predict Scores for T20 Cricket Matches this SUMMER. Win Exciting Prizes. " +
-                    "\n\nGroup ID: ${groupItem.groupId.toUpperCase()} \nJoin code: ${groupItem.joinCode} \n\nDownload the app now at https://guessbuzz.in")
-            sendIntent.type = "text/plain"
-            startActivity(sendIntent)
+            if (transfer != null) {
+                firebaseAnalytics.logEvent("invite_friends", null)
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "${transfer!!.main} \n\nTo join ${groupItem.name} group,\n\nGroup ID: ${groupItem.groupId.toUpperCase()} \nJoin code: ${groupItem.joinCode} \n\n${transfer!!.download}")
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
+            } else {
+                firebaseAnalytics.logEvent("invite_friends_null", null)
+            }
         }
     }
 
@@ -211,6 +215,8 @@ class GroupInfoActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             val (response, _) = result
             if (response != null && response.error == null) {
                 recyclerAdapter.items = response.groupMembers!!
+                transfer = response.transfer
+                above_text.text = transfer!!.above_button
             } else {
                 //error
             }

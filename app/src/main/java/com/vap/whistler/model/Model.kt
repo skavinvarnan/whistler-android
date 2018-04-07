@@ -131,7 +131,7 @@ data class MyGroupItem (val groupId: String,
                         val members: List<String>,
                         val _id: String)
 
-data class GroupInfoResponse(val groupMembers: List<GroupInfoItem>?, val error: ErrorModel?) {
+data class GroupInfoResponse(val groupMembers: List<GroupInfoItem>?, val transfer: TransferItem?, val error: ErrorModel?) {
 
     class Deserializer : ResponseDeserializable<GroupInfoResponse> {
         override fun deserialize(content: String) = Gson().fromJson(content, GroupInfoResponse::class.java)!!
@@ -170,4 +170,7 @@ data class MatchReportItem (val match: String,
                                val key: String,
                                val points: String)
 
+data class TransferItem (val above_button: String,
+                         val main: String,
+                         val download: String)
 
