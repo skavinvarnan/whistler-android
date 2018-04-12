@@ -32,10 +32,14 @@ class SplashActivity : AppCompatActivity() {
 
     private fun getLatestAccessTokenFromFirebase() {
         WhistlerFirebase.getFirebaseCurrentUser().getIdToken(true).addOnCompleteListener({
-            if (it.result.token != null) {
-                WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
-                readyToProceedToLanding()
-            } else {
+            try {
+                if (it.result.token != null) {
+                    WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
+                    readyToProceedToLanding()
+                } else {
+                    showError()
+                }
+            } catch (err: Exception) {
                 showError()
             }
         })

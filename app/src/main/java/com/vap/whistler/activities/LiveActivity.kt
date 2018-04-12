@@ -152,8 +152,12 @@ class LiveActivity : AppCompatActivity() {
             finish()
         } else {
             WhistlerFirebase.getFirebaseCurrentUser().getIdToken(true).addOnCompleteListener({
-                if (it.result.token != null) {
-                    WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
+                try {
+                    if (it.result.token != null) {
+                        WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
+                    }
+                } catch (err: Exception) {
+
                 }
             })
         }

@@ -100,25 +100,30 @@ class LoginActivity : BaseActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
+
                     if (task.isSuccessful) {
                         mAuth.currentUser!!.getIdToken(true).addOnCompleteListener({
-                            if (it.result.token != null) {
-                                WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
+                            try {
+                                if (it.result.token != null) {
+                                    WhistlerSharedPreference.updateSharedPreference(WhistlerConstants.SP.ACCESS_TOKEN, it.result.token!!)
 
-                                Fuel.get(WhistlerConstants.Server.BASE_URL + "/user/init/${WhistlerFirebase.getFirebaseCurrentUser().displayName}/${WhistlerFirebase.getFirebaseCurrentUser().email}")
-                                        .header(Utils.Fuel.autoHeader()).responseObject(GenericResponse.Deserializer()) { _, _, result ->
-                                            val (response, _) = result
-                                            if (response != null && response.error == null) {
-                                                readyToProceedToLanding()
-                                            } else {
-                                                signInError()
-                                                firebaseAnalytics.logEvent("user_init_server_error", null)
+                                    Fuel.get(WhistlerConstants.Server.BASE_URL + "/user/init/${WhistlerFirebase.getFirebaseCurrentUser().displayName}/${WhistlerFirebase.getFirebaseCurrentUser().email}")
+                                            .header(Utils.Fuel.autoHeader()).responseObject(GenericResponse.Deserializer()) { _, _, result ->
+                                                val (response, _) = result
+                                                if (response != null && response.error == null) {
+                                                    readyToProceedToLanding()
+                                                } else {
+                                                    signInError()
+                                                    firebaseAnalytics.logEvent("user_init_server_error", null)
+                                                }
                                             }
-                                        }
 
-                            } else {
+                                } else {
+                                    unableToSignIn()
+                                    firebaseAnalytics.logEvent("unable_to_sign_in", null)
+                                }
+                            } catch (err: Exception) {
                                 unableToSignIn()
-                                firebaseAnalytics.logEvent("unable_to_sign_in", null)
                             }
                         })
                     } else {
