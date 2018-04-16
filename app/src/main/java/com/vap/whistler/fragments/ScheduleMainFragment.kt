@@ -30,6 +30,8 @@ class ScheduleMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: ScheduleAdapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var matchPosition: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,10 +45,11 @@ class ScheduleMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun initView() {
+        linearLayoutManager = LinearLayoutManager(context)
         recyclerAdapter = ScheduleAdapter(ArrayList())
         recyclerView.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = linearLayoutManager
             adapter = recyclerAdapter
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
         }
@@ -68,11 +71,26 @@ class ScheduleMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             val (response, err) = result
             if (response != null && response.error == null) {
                 recyclerAdapter.scheduleItems = response.schedule!!
+                matchPosition = response.matchPosition
             } else {
                 //error
             }
             swipeRefreshLayout.isRefreshing = false
             recyclerAdapter.notifyDataSetChanged()
+            if (shouldScroll) {
+                recyclerView.smoothScrollToPosition(matchPosition + 1)
+            }
+        }
+    }
+    private var shouldScroll = false
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && isResumed) {
+            shouldScroll = true
+            try {
+                recyclerView.smoothScrollToPosition(matchPosition + 1)
+            } catch (ex: Exception) {
+            }
         }
     }
 
@@ -113,6 +131,7 @@ class ScheduleMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             var bottomRight: TextView = view.findViewById(R.id.bottomRight) as TextView
             var teamOne: ImageView = view.findViewById(R.id.teamOne) as ImageView
             var teamTwo: ImageView = view.findViewById(R.id.teamTwo) as ImageView
+            var result: TextView = view.findViewById(R.id.result) as TextView
         }
 
 
@@ -135,6 +154,12 @@ class ScheduleMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             holder.centerTop.text = "VS"
             holder.teamOne.setImageResource(getImageForTeam(scheduleItems[position].team_a))
             holder.teamTwo.setImageResource(getImageForTeam(scheduleItems[position].team_b))
+            if (scheduleItems[position].result != null) {
+                holder.result.text = scheduleItems[position].result!!
+                holder.result.visibility = View.VISIBLE
+            } else {
+                holder.result.visibility = View.GONE
+            }
         }
 
         private fun getImageForTeam(team: String): Int {

@@ -1,6 +1,7 @@
 package com.vap.whistler.fragments
 
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -19,7 +20,6 @@ import android.widget.TextView
 import com.github.kittinunf.fuel.Fuel
 
 import com.vap.whistler.R
-import com.vap.whistler.activities.SettingsActivity
 import com.vap.whistler.model.*
 import com.vap.whistler.utils.Utils
 import com.vap.whistler.utils.WhistlerConstants
@@ -30,11 +30,14 @@ import kotlin.concurrent.timerTask
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.support.v7.app.AlertDialog
+import android.widget.ProgressBar
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import com.vap.whistler.MainApplication
-import com.vap.whistler.activities.PredictionPopupActivity
+import com.vap.whistler.activities.*
+import kotlinx.android.synthetic.main.activity_prediction_popup.view.*
 import kotlin.collections.ArrayList
 
 
@@ -45,11 +48,17 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var customActionBarImageTwo: ImageView
     private lateinit var leftText: TextView
 
+    private lateinit var showButton: Button
+    private lateinit var squadButton: Button
+    private lateinit var scoreCardButton: Button
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerAdapter: PredictionAdapter
     private lateinit var adView: AdView
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private var hasScrollDone: Boolean = false
+    private var mProgressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -59,6 +68,9 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         recyclerView = view.findViewById(R.id.recycler_view)
         swipeRefreshLayout = view.findViewById(R.id.swipe_container)
         adView = view.findViewById(R.id.adView)
+        showButton = view.findViewById(R.id.showButton)
+        squadButton = view.findViewById(R.id.squad)
+        scoreCardButton = view.findViewById(R.id.scoreCard)
         loadAd()
         initFragmentActionBar()
         initView()
@@ -71,6 +83,8 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun initView() {
+        mProgressDialog = ProgressDialog(context)
+        mProgressDialog!!.setMessage("Loading...")
         recyclerAdapter = PredictionAdapter(ArrayList(), null, context!!)
         recyclerView.apply {
             setHasFixedSize(true)
@@ -93,7 +107,63 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val paramsParent = swipeRefreshLayout.layoutParams as ViewGroup.LayoutParams
         params.height = paramsParent.height
         recyclerView.layoutParams = params
+
+
+        showButton.setOnClickListener {
+            firebaseAnalytics.logEvent("more_less_clicked", null)
+            if (compressLayout.visibility == View.GONE) {
+                compressLayout.visibility = View.VISIBLE
+                showButton.text = "Show Less"
+            } else {
+                compressLayout.visibility = View.GONE
+                showButton.text = "Show More"
+            }
+        }
+
+        squadButton.setOnClickListener {
+            if (context != null && scoreBoard != null) {
+                if (scoreBoard!!.squadA.isNotEmpty() && scoreBoard!!.squadB.isNotEmpty()) {
+                    firebaseAnalytics.logEvent("squad_clicked", null)
+                    context!!.startActivity(Intent(context, SquadActivity::class.java)
+                            .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(scoreBoard)))
+                } else {
+                    firebaseAnalytics.logEvent("no_squad_info", null)
+                    val alert = AlertDialog.Builder(context!!)
+                    alert.setMessage("Squad yet to be updated")
+                    alert.setPositiveButton("OK") { _, _ ->
+
+                    }
+                    alert.show()
+                }
+            }
+        }
+
+
+        scoreCardButton.setOnClickListener {
+            mProgressDialog!!.setMessage("Loading")
+            mProgressDialog!!.setCancelable(false)
+            mProgressDialog!!.show()
+            Fuel.get(WhistlerConstants.Server.BASE_URL + "/runs/score_board/${Utils.Match.getCurrentMatch().key}/md").header(Utils.Fuel.autoHeader()).responseObject(ScoreBoardResponse.Deserializer()) { _, _, result ->
+                val (response, _) = result
+                if (response != null && response.error == null) {
+                    updateScoreBoard(response.scoreBoard!!)
+                    scoreBoard = response.scoreBoard
+                    context!!.startActivity(Intent(context, ScorecardActivity::class.java)
+                            .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(response.scoreBoard)))
+                    firebaseAnalytics.logEvent("fetch_scorecard_md", null)
+                } else {
+                    firebaseAnalytics.logEvent("fetch_scorecard_md_error", null)
+                }
+                mProgressDialog!!.dismiss()
+            }
+        }
+
+        Utils.Others.buttonEffect(showButton, "#175ed1")
+        Utils.Others.buttonEffect(squadButton, "#3d9641")
+        Utils.Others.buttonEffect(scoreCardButton, "#3d9641")
     }
+
+
 
     override fun onRefresh() {
         loadRecyclerViewData(true)
@@ -114,6 +184,10 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         }
                         swipeRefreshLayout.isRefreshing = false
                         recyclerAdapter.notifyDataSetChanged()
+                        if (!hasScrollDone) {
+                            hasScrollDone = true
+                            recyclerView.smoothScrollToPosition(recyclerAdapter.itemCount)
+                        }
                     }
         } else {
             stopTimer()
@@ -227,12 +301,15 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
+    var scoreBoard: ScoreBoard? = null
+
     private fun getScoreCardFromServer() {
         if (WhistlerFirebase.isUserLoggedIn()) {
             Fuel.get(WhistlerConstants.Server.BASE_URL + "/runs/score_board/${Utils.Match.getCurrentMatch().key}").header(Utils.Fuel.autoHeader()).responseObject(ScoreBoardResponse.Deserializer()) { _, _, result ->
                 val (response, _) = result
                 if (response != null && response.error == null) {
                     updateScoreBoard(response.scoreBoard!!)
+                    scoreBoard = response.scoreBoard
                     firebaseAnalytics.logEvent("fetch_scorecard", null)
                 } else {
                     firebaseAnalytics.logEvent("fetch_scorecard_error", null)
@@ -297,6 +374,12 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         customActionBarTitle.text = scoreBoard.title
 
+        if (scoreBoard.showScoreCard) {
+            scoreCardButton.visibility = View.VISIBLE
+        } else {
+            scoreCardButton.visibility = View.GONE
+        }
+
     }
 
     class PredictionAdapter(var items: List<PredictPointsItemArr>, var teamBatting: String?, var context: Context) : RecyclerView.Adapter<PredictionAdapter.ViewHolder>() {
@@ -304,8 +387,10 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var overs: TextView = view.findViewById<View>(R.id.overs) as TextView
             var runs: TextView = view.findViewById(R.id.runs) as TextView
+            var runsProgressBar: ProgressBar = view.findViewById(R.id.runsProgressBar) as ProgressBar
             var prediction: TextView = view.findViewById(R.id.prediction) as TextView
             var points: TextView = view.findViewById(R.id.points) as TextView
+            var pointsProgressBar: ProgressBar = view.findViewById(R.id.pointsProgressBar) as ProgressBar
             var predictButton: TextView = view.findViewById(R.id.predictButton) as Button
         }
 
@@ -374,6 +459,26 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             } else {
                 holder.points.setTextColor(Color.BLACK)
                 holder.points.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            if (items[position].predicted.label != "NA" && items[position].points.label == "0") {
+                holder.points.visibility = View.GONE
+                holder.pointsProgressBar.visibility = View.VISIBLE
+            } else {
+                holder.points.visibility = View.VISIBLE
+                holder.pointsProgressBar.visibility = View.GONE
+            }
+
+            if (items[position].runs.label == "NA") {
+                holder.runs.text = "-"
+            } else {
+                holder.runs.text = items[position].runs.label
+            }
+
+            if (items[position].predicted.label == "NA") {
+                holder.prediction.text = "-"
+            } else {
+                holder.prediction.text = items[position].predicted.label
             }
 
 

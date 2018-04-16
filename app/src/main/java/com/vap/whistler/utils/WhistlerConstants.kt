@@ -33,6 +33,7 @@ class WhistlerConstants {
             const val IS_LAST: String = "IS_LAST"
             const val MATCH_KEY: String = "MATCH_KEY"
             const val TITLE: String = "TITLE"
+            const val SCORE_BOARD: String = "SCORE_BOARD"
         }
     }
 

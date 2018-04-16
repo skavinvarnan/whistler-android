@@ -8,19 +8,23 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="ad_live">ca-app-pub-7846555754762077/4067094253</string>
-    <string name="ad_leaderboard">ca-app-pub-7846555754762077/6170513416</string>
-    <string name="ad_match_report">ca-app-pub-7846555754762077/4843676226</string>
-    <string name="ad_all_matches">ca-app-pub-7846555754762077/7680758403</string>
-    <string name="ad_groups">ca-app-pub-7846555754762077/6420002846</string>
+    <!--<string name="ad_live">ca-app-pub-7846555754762077/4067094253</string>-->
+    <!--<string name="ad_leaderboard">ca-app-pub-7846555754762077/6170513416</string>-->
+    <!--<string name="ad_match_report">ca-app-pub-7846555754762077/4843676226</string>-->
+    <!--<string name="ad_all_matches">ca-app-pub-7846555754762077/7680758403</string>-->
+    <!--<string name="ad_groups">ca-app-pub-7846555754762077/6420002846</string>-->
 
 
-    <!--<string name="ad_live">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="ad_leaderboard">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="ad_match_report">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="ad_all_matches">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--<string name="ad_groups">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="ad_live">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_leaderboard">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_match_report">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_all_matches">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_groups">ca-app-pub-3940256099942544/6300978111</string>
 
+    <string name="title_activity_squad">SquadActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_scorecard">ScorecardActivity</string>
 
 
 </resources>

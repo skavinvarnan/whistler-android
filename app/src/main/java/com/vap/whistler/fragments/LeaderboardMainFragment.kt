@@ -137,6 +137,7 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var name: TextView = view.findViewById<View>(R.id.name) as TextView
             var points: TextView = view.findViewById(R.id.points) as TextView
+            var overAll: TextView = view.findViewById(R.id.overall) as TextView
         }
 
 
@@ -151,6 +152,7 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.name.text = items[position].name
             holder.points.text = "${items[position].total_for_match}"
+            holder.overAll.text = "${items[position].over_all_points}"
             holder.itemView.setOnClickListener {
                 context.itemClicked(position)
             }

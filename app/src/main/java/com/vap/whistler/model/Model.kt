@@ -20,10 +20,10 @@ data class LeaderBoardResponse(val leaderBoard: List<LeaderBoardItem>?, val erro
 }
 
 data class LeaderBoardItem (val uid: String,
-                            val total_for_match: Int, val name: String)
+                            val total_for_match: Int, val over_all_points: Int, val name: String)
 
 
-data class ScheduleResponse(val schedule: List<ScheduleItem>?, val error: ErrorModel?) {
+data class ScheduleResponse(val schedule: List<ScheduleItem>?, val matchPosition: Int, val error: ErrorModel?) {
 
     class Deserializer : ResponseDeserializable<ScheduleResponse> {
         override fun deserialize(content: String) = Gson().fromJson(content, ScheduleResponse::class.java)!!
@@ -41,6 +41,7 @@ data class ScheduleItem (val related_name: String,
                          val team_a_name: String,
                          val team_b_name: String,
                          val key: String,
+                         val result: String?,
                          val team_a: String,
                          val team_b: String)
 
@@ -92,8 +93,17 @@ data class ScoreBoard (
         val bowlerEconomy: String,
         val title: String,
         val showUpdated: Boolean,
-        val battingTeam: String
+        val battingTeam: String,
+        val teamAShortName: String,
+        val teamBShortName: String,
+        val squadA: List<PlayerInfo>,
+        val squadB: List<PlayerInfo>,
+        val showScoreCard: Boolean,
+        val inn1md: String,
+        val inn2md: String
 )
+
+data class PlayerInfo(val name: String, val isCaptain: Boolean, val isKeeper: Boolean, val key: String)
 
 data class PredictPointsResponse(val predictPointsTableData: List<PredictPointsItemArr>?, val teamBatting: String, val error: ErrorModel?) {
 

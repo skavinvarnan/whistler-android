@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:layout_margin="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
     android:layout_height="wrap_content">
     <TextView
         android:layout_width="0dp"
@@ -12,22 +13,34 @@
         android:text="1"
         android:layout_gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="15dp"
         android:layout_margin="8dp"
-        android:layout_height="32dp"
+        android:layout_height="26dp"
         android:gravity="center" />
 
-    <TextView
+
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:id="@+id/runs"
-        android:text="1"
-        android:layout_gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
         android:layout_margin="8dp"
-        android:layout_height="32dp"
-        android:gravity="center" />
+        android:layout_height="26dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/runs"
+            android:layout_height="match_parent"
+            android:text="1"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"
+            android:gravity="center" />
+
+        <ProgressBar
+            android:id="@+id/runsProgressBar"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="0dp"
@@ -35,23 +48,33 @@
         android:id="@+id/prediction"
         android:text="1"
         android:layout_margin="8dp"
-        android:layout_height="32dp"
+        android:layout_height="26dp"
         android:layout_gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="15dp"
         android:gravity="center" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="0dp"
-        android:id="@+id/points"
         android:layout_weight="1"
         android:layout_margin="8dp"
-        android:layout_height="32dp"
-        android:text="1"
-        android:layout_gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:gravity="center" />
+        android:layout_height="26dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/points"
+            android:layout_height="match_parent"
+            android:text="1"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"
+            android:gravity="center" />
+
+        <ProgressBar
+            android:id="@+id/pointsProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 
     <Button
         android:layout_width="0dp"
@@ -64,7 +87,7 @@
         android:textAllCaps="false"
         android:gravity="center"
         android:maxLines="1"
-        android:layout_height="40dp" />
+        android:layout_height="34dp" />
 
 
 </LinearLayout>

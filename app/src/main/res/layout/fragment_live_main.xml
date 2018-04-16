@@ -17,7 +17,10 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="4dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -44,7 +47,7 @@
                         android:layout_weight="3"
                         android:text="--"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/scoreWickets"
@@ -54,7 +57,7 @@
                         android:layout_weight="6.5"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="24dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -72,7 +75,7 @@
                         android:fontFamily="sans-serif-light"
                         android:text="1st Inn"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14dp" />
 
                     <TextView
                         android:id="@+id/overNumber"
@@ -82,7 +85,7 @@
                         android:layout_weight="6.5"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16dp" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -104,7 +107,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14dp" />
 
                     <TextView
                         android:id="@+id/pshipData"
@@ -112,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:textSize="14dp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
@@ -130,7 +134,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14dp" />
 
                     <TextView
                         android:id="@+id/crrData"
@@ -138,6 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:textSize="14dp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
@@ -156,7 +161,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textSize="14dp" />
 
                     <TextView
                         android:id="@+id/rrrData"
@@ -164,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:textSize="14dp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
@@ -182,6 +188,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="marquee"
+            android:textSize="14dp"
             android:fadingEdge="horizontal"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
@@ -196,317 +203,392 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/compressLayout"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="40"
-                android:text="Batsman"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="R"
-                android:textSize="12sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="40"
+                    android:text="Batsman"
+                    android:textSize="12dp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="B"
-                android:textSize="12sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="R"
+                    android:textSize="12dp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="4s"
-                android:textSize="12sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="B"
+                    android:textSize="12dp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="6s"
-                android:textSize="12sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="4s"
+                    android:textSize="12dp" />
 
-            <TextView
-                android:layout_width="0dp"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="6s"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:text="SR"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="SR"
-                android:textSize="12sp" />
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/batsmanOneName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="40"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanOneRun"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanOneBalls"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanOne4s"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanOne6s"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanOneSr"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/batsmanTwoName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="40"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanTwoRuns"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanTwoBalls"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanTwo4s"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanTwo6s"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/batsmanTwoSr"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="40"
+                    android:text="Bowler"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="O"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="M"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="R"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:text="W"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:text="Eco"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/bowlerName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="40"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/bowlerOver"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/bowlerMaiden"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/bowlerRuns"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/bowlerWickets"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="10"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/bowlerEco"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:text="-"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/squad"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="4dp"
+                    android:text="Squad"
+                    android:textAllCaps="false"
+                    android:textSize="14dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_corner_green"
+                    android:layout_height="32dp" />
+
+                <Button
+                    android:id="@+id/scoreCard"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:text="Scorecard"
+                    android:layout_marginLeft="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="14dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_corner_green"
+                    android:layout_height="32dp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal">
-
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/batsmanOneName"
-                android:layout_width="0dp"
+                android:id="@+id/updatedAt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="40"
-                android:text="-"
-                android:textColor="@android:color/black" />
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:text="Updated 0 seconds ago"
+                android:textSize="10dp" />
 
-            <TextView
-                android:id="@+id/batsmanOneRun"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
+            <Button
+                android:id="@+id/showButton"
+                android:layout_width="wrap_content"
+                android:text="Show More"
+                android:textAllCaps="false"
+                android:layout_alignParentEnd="true"
+                android:textSize="12dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/button_corner"
+                android:layout_height="32dp" />
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/batsmanOneBalls"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
 
-            <TextView
-                android:id="@+id/batsmanOne4s"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanOne6s"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanOneSr"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/batsmanTwoName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="40"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanTwoRuns"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanTwoBalls"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanTwo4s"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanTwo6s"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/batsmanTwoSr"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="40"
-                android:text="Bowler"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="O"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="M"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="R"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="W"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="Eco"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/bowlerName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="40"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/bowlerOver"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/bowlerMaiden"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/bowlerRuns"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/bowlerWickets"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="10"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/bowlerEco"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="-"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/updatedAt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="2dp"
-            android:text="Updated 0 seconds ago"
-            android:textSize="10sp" />
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView
@@ -521,15 +603,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp">
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/include"
             layout="@layout/predict_recycle_header_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
