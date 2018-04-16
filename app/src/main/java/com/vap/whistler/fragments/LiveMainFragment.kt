@@ -182,8 +182,18 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         if (response != null && response.error == null) {
                             recyclerAdapter.items = response.predictPointsTableData!!
                             recyclerAdapter.teamBatting = response.teamBatting
-                            predictionStatusText.text = response.status
-                            predictionStatusText.setBackgroundColor(Color.parseColor(response.statusColor))
+                            try {
+                                if (predictionStatusText != null) {
+                                    predictionStatusText.text = response.status
+                                    predictionStatusText.setBackgroundColor(Color.parseColor(response.statusColor))
+                                }
+                                if (response.showStatus) {
+                                    predictionStatusText.visibility = View.VISIBLE
+                                } else {
+                                    predictionStatusText.visibility = View.GONE
+                                }
+
+                            } catch (ex: Exception) {}
                             firebaseAnalytics.logEvent("fetch_prediction_table", null)
                         } else {
                             firebaseAnalytics.logEvent("fetch_prediction_table_error", null)
