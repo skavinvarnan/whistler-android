@@ -146,7 +146,7 @@ class SquadActivity : AppCompatActivity() {
                 holder.text.text = "${items[position].name} (Wk)"
             }
 
-            if (items[position].isCaptain && items[position].isCaptain) {
+            if (items[position].isCaptain && items[position].isKeeper) {
                 holder.text.text = "${items[position].name} (C & Wk)"
             }
 
