@@ -14,17 +14,16 @@
         android:title="Live"
         app:showAsAction="always|withText"/>
 
+    <item
+        android:id="@+id/navigation_leaderboard"
+        android:icon="@drawable/leaderboard"
+        android:title="Leaderboard"
+        app:showAsAction="always|withText"/>
 
     <item
         android:id="@+id/navigation_groups"
         android:icon="@drawable/group"
         android:title="Groups"
-        app:showAsAction="always|withText"/>
-
-    <item
-        android:id="@+id/navigation_leaderboard"
-        android:icon="@drawable/leaderboard"
-        android:title="Leaderboard"
         app:showAsAction="always|withText"/>
 
 </menu>

@@ -122,18 +122,22 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         squadButton.setOnClickListener {
             if (context != null && scoreBoard != null) {
-                if (scoreBoard!!.squadA.isNotEmpty() && scoreBoard!!.squadB.isNotEmpty()) {
-                    firebaseAnalytics.logEvent("squad_clicked", null)
-                    context!!.startActivity(Intent(context, SquadActivity::class.java)
-                            .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(scoreBoard)))
-                } else {
-                    firebaseAnalytics.logEvent("no_squad_info", null)
-                    val alert = AlertDialog.Builder(context!!)
-                    alert.setMessage("Squad yet to be updated")
-                    alert.setPositiveButton("OK") { _, _ ->
+                try {
+                    if (scoreBoard!!.squadA.isNotEmpty() && scoreBoard!!.squadB.isNotEmpty()) {
+                        firebaseAnalytics.logEvent("squad_clicked", null)
+                        context!!.startActivity(Intent(context, SquadActivity::class.java)
+                                .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(scoreBoard)))
+                    } else {
+                        firebaseAnalytics.logEvent("no_squad_info", null)
+                        val alert = AlertDialog.Builder(context!!)
+                        alert.setMessage("Squad yet to be updated")
+                        alert.setPositiveButton("OK") { _, _ ->
 
+                        }
+                        alert.show()
                     }
-                    alert.show()
+                } catch (e: Exception) {
+
                 }
             }
         }
@@ -178,6 +182,8 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         if (response != null && response.error == null) {
                             recyclerAdapter.items = response.predictPointsTableData!!
                             recyclerAdapter.teamBatting = response.teamBatting
+                            predictionStatusText.text = response.status
+                            predictionStatusText.setBackgroundColor(Color.parseColor(response.statusColor))
                             firebaseAnalytics.logEvent("fetch_prediction_table", null)
                         } else {
                             firebaseAnalytics.logEvent("fetch_prediction_table_error", null)

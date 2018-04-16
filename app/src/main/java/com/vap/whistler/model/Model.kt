@@ -105,7 +105,7 @@ data class ScoreBoard (
 
 data class PlayerInfo(val name: String, val isCaptain: Boolean, val isKeeper: Boolean, val key: String)
 
-data class PredictPointsResponse(val predictPointsTableData: List<PredictPointsItemArr>?, val teamBatting: String, val error: ErrorModel?) {
+data class PredictPointsResponse(val predictPointsTableData: List<PredictPointsItemArr>?, val teamBatting: String, val status: String, val statusColor: String, val error: ErrorModel?) {
 
     class Deserializer : ResponseDeserializable<PredictPointsResponse> {
         override fun deserialize(content: String) = Gson().fromJson(content, PredictPointsResponse::class.java)!!

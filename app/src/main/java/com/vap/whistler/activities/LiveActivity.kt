@@ -46,11 +46,11 @@ class LiveActivity : AppCompatActivity() {
                 viewPager.currentItem = 1
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_groups -> {
+            R.id.navigation_leaderboard -> {
                 viewPager.currentItem = 2
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_leaderboard -> {
+            R.id.navigation_groups -> {
                 viewPager.currentItem = 3
                 return@OnNavigationItemSelectedListener true
             }
@@ -86,12 +86,12 @@ class LiveActivity : AppCompatActivity() {
                         navigation.selectedItemId = R.id.navigation_live
                     }
                     2 -> {
-                        firebaseAnalytics.logEvent("groups", null)
-                        navigation.selectedItemId = R.id.navigation_groups
-                    }
-                    3 -> {
                         firebaseAnalytics.logEvent("leaderboard", null)
                         navigation.selectedItemId = R.id.navigation_leaderboard
+                    }
+                    3 -> {
+                        firebaseAnalytics.logEvent("groups", null)
+                        navigation.selectedItemId = R.id.navigation_groups
                     }
                 }
 
@@ -113,10 +113,10 @@ class LiveActivity : AppCompatActivity() {
                     return liveFragment
                 }
                 2 -> {
-                    return groupsFragment
+                    return leaderboardFragment
                 }
                 3 -> {
-                    return leaderboardFragment
+                    return groupsFragment
                 }
             }
             return LiveMainFragment()
