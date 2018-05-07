@@ -100,7 +100,8 @@ data class ScoreBoard (
         val squadB: List<PlayerInfo>,
         val showScoreCard: Boolean,
         val inn1md: String,
-        val inn2md: String
+        val inn2md: String,
+        val url: String
 )
 
 data class PlayerInfo(val name: String, val isCaptain: Boolean, val isKeeper: Boolean, val key: String)

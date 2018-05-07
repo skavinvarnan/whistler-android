@@ -66,11 +66,12 @@
             android:name=".activities.SquadActivity"
             android:label="@string/title_activity_squad"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".activities.ScorecardActivity"
             android:label="@string/title_activity_scorecard"
-            android:theme="@style/AppThemeNoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".activities.ScoreCardWebViewActivity"></activity>
     </application>
 
 </manifest>

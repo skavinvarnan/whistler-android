@@ -117,6 +117,8 @@ class SplashActivity : AppCompatActivity() {
         alert.setNegativeButton("Close App") { _, _ ->
             finish()
         }
-        alert.show()
+        if (!isFinishing) {
+            alert.show()
+        }
     }
 }

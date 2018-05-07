@@ -144,22 +144,28 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
         scoreCardButton.setOnClickListener {
-            mProgressDialog!!.setMessage("Loading")
-            mProgressDialog!!.setCancelable(false)
-            mProgressDialog!!.show()
-            Fuel.get(WhistlerConstants.Server.BASE_URL + "/runs/score_board/${Utils.Match.getCurrentMatch().key}/md").header(Utils.Fuel.autoHeader()).responseObject(ScoreBoardResponse.Deserializer()) { _, _, result ->
-                val (response, _) = result
-                if (response != null && response.error == null) {
-                    updateScoreBoard(response.scoreBoard!!)
-                    scoreBoard = response.scoreBoard
-                    context!!.startActivity(Intent(context, ScorecardActivity::class.java)
-                            .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(response.scoreBoard)))
-                    firebaseAnalytics.logEvent("fetch_scorecard_md", null)
-                } else {
-                    firebaseAnalytics.logEvent("fetch_scorecard_md_error", null)
+            if (context != null && scoreBoard != null) {
+                if (scoreBoard!!.url.isNotEmpty()) {
+                    context!!.startActivity(Intent(context, ScoreCardWebViewActivity::class.java)
+                            .putExtra(WhistlerConstants.Intent.URL, scoreBoard!!.url))
                 }
-                mProgressDialog!!.dismiss()
             }
+//            mProgressDialog!!.setMessage("Loading")
+//            mProgressDialog!!.setCancelable(false)
+//            mProgressDialog!!.show()
+//            Fuel.get(WhistlerConstants.Server.BASE_URL + "/runs/score_board/${Utils.Match.getCurrentMatch().key}/md").header(Utils.Fuel.autoHeader()).responseObject(ScoreBoardResponse.Deserializer()) { _, _, result ->
+//                val (response, _) = result
+//                if (response != null && response.error == null) {
+//                    updateScoreBoard(response.scoreBoard!!)
+//                    scoreBoard = response.scoreBoard
+//                    context!!.startActivity(Intent(context, ScorecardActivity::class.java)
+//                            .putExtra(WhistlerConstants.Intent.SCORE_BOARD, Gson().toJson(response.scoreBoard)))
+//                    firebaseAnalytics.logEvent("fetch_scorecard_md", null)
+//                } else {
+//                    firebaseAnalytics.logEvent("fetch_scorecard_md_error", null)
+//                }
+//                mProgressDialog!!.dismiss()
+//            }
         }
 
         Utils.Others.buttonEffect(showButton, "#175ed1")
@@ -223,7 +229,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     loadRecyclerViewData(false)
                 }
             }
-        }, 0, 5000)
+        }, 0, 2000)
         secondsTimer = Timer()
         timer!!.scheduleAtFixedRate(timerTask{
             incrementTimerUpdatedLabel()
@@ -236,7 +242,11 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             try {
                 activity!!.runOnUiThread {
                     try {
-                        updatedAt.text = "Updated $updatedHowManySecondsAgo seconds ago"
+                        if (updatedHowManySecondsAgo > 4) {
+                            updatedAt.text = "Updated ${updatedHowManySecondsAgo} seconds ago"
+                        } else {
+                            updatedAt.text = "Updated recently"
+                        }
                     } catch (err: Exception) {
                         firebaseAnalytics.logEvent("caught_crash_123", null)
                     }
@@ -390,7 +400,7 @@ class LiveMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         customActionBarTitle.text = scoreBoard.title
 
-        if (scoreBoard.showScoreCard) {
+        if (scoreBoard.url.isNotEmpty()) {
             scoreCardButton.visibility = View.VISIBLE
         } else {
             scoreCardButton.visibility = View.GONE

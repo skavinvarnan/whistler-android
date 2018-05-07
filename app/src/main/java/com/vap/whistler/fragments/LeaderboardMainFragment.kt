@@ -77,6 +77,16 @@ class LeaderboardMainFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener
         loadRecyclerViewData()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && isResumed) {
+            try {
+                loadRecyclerViewData()
+            } catch (ex: Exception) {
+            }
+        }
+    }
+
     override fun onRefresh() {
         loadRecyclerViewData()
     }

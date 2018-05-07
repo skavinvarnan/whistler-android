@@ -551,7 +551,6 @@
                     android:id="@+id/scoreCard"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:visibility="gone"
                     android:text="Scorecard"
                     android:layout_marginLeft="4dp"
                     android:textAllCaps="false"
